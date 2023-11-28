@@ -1,9 +1,9 @@
 Cmin
-        a.out
-        comp.tab.c
-        comp.tab.h
-        entrada.s
-        entrada2.s
-        lex.yy.c
-        out
-        out.s
+a.out
+comp.tab.c
+comp.tab.h
+entrada.s
+entrada2.s
+lex.yy.c
+out
+out.s
