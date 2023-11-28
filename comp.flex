@@ -9,6 +9,7 @@
 [ \t]			{ coluna+=yyleng; }
 \n			{ coluna = 1; linha++;}
 ";"			{ coluna+=yyleng; return PONTO_E_VIRGULA; }
+","			{ coluna+=yyleng; return VIRGULA; }
 "{"			{ coluna+=yyleng; return ABRE_CHAVES; }
 "}"			{ coluna+=yyleng; return FECHA_CHAVES; }
 ")"			{ coluna+=yyleng; return FECHA_PARENTESES; }
@@ -26,7 +27,8 @@
 "main"		{ coluna+=yyleng; return MAIN; }
 "return"	{ coluna+=yyleng; return RETURN; }
 [0-9]+		{ coluna+=yyleng; yylval.number = atoi(yytext); return NUM; }
-[a-zA-Z]+	{ coluna+=yyleng; yylval.string = strdup(yytext); return VARIAVEL; }
+[a-zA-Z][_a-zA-Z0-9]+ 	{ coluna+=yyleng; yylval.string = strdup(yytext); return VARIAVEL; }
+"//".*\n			{ coluna+=yyleng; }		
 .					{ yyerror("erro lexico"); }
 %%
 int yywrap(){
