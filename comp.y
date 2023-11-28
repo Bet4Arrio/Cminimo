@@ -23,7 +23,7 @@ extern int yyleng;
 %token <number> NUM
 %token <string> VARIAVEL 
 
-%left  MENOS MAIS DIVIDIR MULTIPLICA
+%right  MULTIPLICA DIVIDIR  MENOS MAIS 
 
 %%
 programa: INT MAIN ABRE_PARENTESES FECHA_PARENTESES ABRE_CHAVES  {inicia_codigo(); } corpo FECHA_CHAVES {finaliza_cod(); }
@@ -35,10 +35,11 @@ corpo:  final corpo
  ;  
 final: RETURN expr {monta_retorno(); } PONTO_E_VIRGULA
  ;
-expr: expr MAIS expr  {monta_add();}
-    | expr MENOS expr {monta_sub();}
-    | expr DIVIDIR expr {monta_div();}
+expr: ABRE_PARENTESES expr FECHA_PARENTESES
     | expr MULTIPLICA expr {monta_mult();}
+    | expr DIVIDIR expr {monta_div();}
+    | expr MAIS expr  {monta_add();}
+    | expr MENOS expr {monta_sub();}
     | NUM {empilha_num($1);}
     | VARIAVEL {empilha_var($1);}
  ;
