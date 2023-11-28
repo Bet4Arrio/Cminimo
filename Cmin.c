@@ -6,7 +6,7 @@ extern int coluna;
 extern int yyleng;
 
 int yyerror(char * msg){
-printf("(%d, %d) Error: %s", linha, coluna-yyleng, msg);
+printf("(%d, %d) Error: %s  \n", linha, coluna-yyleng, msg);
 exit(0);
 }
 
@@ -88,11 +88,19 @@ void monta_sub(){
 }
 
 void monta_mult(){
-
+    fprintf(f, "	popq %%rbx\n");
+	fprintf(f, "	popq %%rax\n");
+	fprintf(f, "	imul %%rax, %%rbx\n");
+	fprintf(f, "	pushq %%rbx\n");
 }
 
 void monta_div(){
+	fprintf(f, "	popq %%rbx\n"); // divisor
+    fprintf(f, "	popq %%rax\n"); // parte inteira
+    fprintf(f, "	movq $0, %%rdx\n"); // rola
 
+	fprintf(f, "	divq %%rbx\n");
+	fprintf(f, "	pushq %%rax\n");
 }
 
 void monta_var(char* Varname){
@@ -104,7 +112,7 @@ void monta_var(char* Varname){
     strcpy(va->nome, Varname);
     ht_set(tabVars, va->nome, va);
     fprintf(f, "	subq $%d, %%rsp\n\n", INT_TAM); // aloca espaco variavel
-    fprintf(f, "	movq $0,  -%ld(%%rbp)\n\n", va->offset); // inicial com 0 (fuck C)
+    fprintf(f, "	movq $0,  -%ld(%%rbp)\n\n", va->offset); // inicia com 0 (fuck C)
     
 }
 
@@ -112,7 +120,6 @@ void atribui_var(char* Varname){
     fprintf(f, "# atribuindo Var %s \n", Varname);
     VarStruct* va = pegaVar(Varname);
     fprintf(f, "	popq -%ld(%%rbp)\n\n", va->offset);
-
 }
 
 
