@@ -1,27 +1,28 @@
+#include "stacks.h"
+
 typedef struct stack {
 	 size_t size;
 	 size_t index;
-	 void* entrys;
+	 void** entrys;
 } stack;
 
 #define GROW_FACTOR 4
 
 stack* st_create(void){
-    stack * st = malloc(sizeof(stack));
+    stack * st = (stack *) malloc(sizeof(stack));
     if(st == NULL){
-        printf("Not enough memory");
-        exit(0);
+      exit(0);
     }
     st->size = GROW_FACTOR;
     st->index = 0;
-    st->entrys = malloc(sizeof*(void*) * st->size);
-    return st
+    st->entrys = (void**) malloc(sizeof(void*) * st->size);
+    return st;
 }
 
 
-stack* st growStack(stack* st){
+stack* growStack(stack* st){
     st->size *= GROW_FACTOR;
-    st->entrys = realloc(sizeof*(void*) * st->size);
+    st->entrys = realloc(st->entrys  ,sizeof(void*) * st->size);
 
     return st;
 }
@@ -29,7 +30,7 @@ void* st_pop(stack* st){
     if (st->index == 0)
         return st->entrys[st->index];
     st->index--;
-    return st->entrys[st->index+1]
+    return st->entrys[st->index+1];
 }
 
 void* st_push(stack* st, void* value){

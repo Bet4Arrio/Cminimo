@@ -6,7 +6,7 @@ YFLAGS = -d
 CC=gcc
 CCFLAGS= -lm
 
-$(PROJ_NAME): lex.yy.c comp.tab.c  lib/hashtable.c Cmin.c
+$(PROJ_NAME): lex.yy.c comp.tab.c  lib/hashtable.c lib/stacks.c Cmin.c
 	@ echo 'Building Bin using gcc 	 linke:$^ e $< e $@'
 	$(CC)  $^ -o $@  $(CCFLAGS)
 
