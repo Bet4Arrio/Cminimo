@@ -23,6 +23,7 @@
 ">"			{ coluna+=yyleng; return MAIORQUE; }
 "<"			{ coluna+=yyleng; return MENORQUE; }
 "="			{ coluna+=yyleng; return INGUAL; }
+"!"			{ coluna+=yyleng; return NAO; }
 "int"		{ coluna+=yyleng; return INT; }
 "main"		{ coluna+=yyleng; return MAIN; }
 "return"	{ coluna+=yyleng; return RETURN; }

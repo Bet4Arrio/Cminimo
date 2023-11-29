@@ -55,7 +55,6 @@ void inicia_codigo(){
 
 }
 
-
 void monta_retorno(){
     fprintf(f, "    popq    %%rbx\n");
 	fprintf(f, "    movq    $1, %%rax\n"); // finaliza programa 
@@ -71,7 +70,6 @@ void empilha_var(char* Varname){
     VarStruct* va = pegaVar(Varname);
     fprintf(f, "	pushq -%ld(%%rbp)\n\n", va->offset);
 }
-
 
 void monta_add(){
     fprintf(f, "	popq %%rbx\n");
@@ -122,6 +120,59 @@ void atribui_var(char* Varname){
     fprintf(f, "	popq -%ld(%%rbp)\n\n", va->offset);
 }
 
+void monta_maior(){
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	setg	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+}
+
+void monta_maior_igual(){
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	setge	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+}
+
+void monta_menor(){
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	setl	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+}
+
+void monta_menor_igual(){
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	setle	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+}
+
+void monta_igual(){
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	sete	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+}
+
+void monta_diferente(){
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	setne	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+}
 
 void finaliza_cod(){
   fclose(f);

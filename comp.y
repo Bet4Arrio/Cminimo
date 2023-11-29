@@ -12,7 +12,7 @@ extern int yyleng;
 
 %}
 
-%token INT MAIN ABRE_PARENTESES FECHA_PARENTESES ABRE_CHAVES FECHA_CHAVES RETURN  PONTO_E_VIRGULA MAIS MENOS DIVIDIR MULTIPLICA IF ELSE MAIORQUE MENORQUE INGUAL VIRGULA
+%token INT MAIN ABRE_PARENTESES FECHA_PARENTESES ABRE_CHAVES FECHA_CHAVES RETURN  PONTO_E_VIRGULA MAIS MENOS DIVIDIR MULTIPLICA IF ELSE MAIORQUE MENORQUE INGUAL VIRGULA NAO
 
 %union 
 {
@@ -34,6 +34,7 @@ corpo:  final corpo
     |
  ;  
 final: RETURN expr {monta_retorno(); } PONTO_E_VIRGULA
+    | RETURN cond {monta_retorno(); } PONTO_E_VIRGULA
  ;
 expr: ABRE_PARENTESES expr FECHA_PARENTESES
     | expr MULTIPLICA expr {monta_mult();}
@@ -57,7 +58,12 @@ ElseStatment: ELSE ABRE_CHAVES corpo FECHA_CHAVES
     |
 ;
 
-cond: expr MAIORQUE expr | expr MENORQUE expr | expr INGUAL INGUAL expr
+cond: expr MAIORQUE expr {monta_maior();} 
+    | expr MAIORQUE INGUAL expr {monta_maior_igual();} 
+    | expr MENORQUE expr {monta_menor();}
+    | expr MENORQUE INGUAL expr {monta_menor_igual();}
+    | expr INGUAL INGUAL expr {monta_igual();}
+    | expr NAO INGUAL expr {monta_diferente();}
 ;
 
 %%
