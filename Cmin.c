@@ -215,7 +215,8 @@ void monta_AND(){
 
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
-    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	addq %%rbx, %%rax\n");
+    fprintf(f, "	cmpq $2, %%rax\n");
     fprintf(f, "	sete	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
