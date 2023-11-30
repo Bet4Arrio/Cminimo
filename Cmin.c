@@ -238,6 +238,8 @@ void monta_OR(){
 
 
 void monta_start_while(){
+    
+    fprintf(f, "#label do while \n");
     char* label = (char *) st_push(labelStack, cria_label());
     fprintf(f, "%s:\n", label);
     
@@ -264,7 +266,6 @@ void monta_jmp(){
 
 void monta_if(){
     char* label = (char *) st_push(labelStack, cria_label());
-
     fprintf(f, "	popq %%rbx\n");
     fprintf(f, "	cmpq $1, %%rbx\n"); // ver se eh verdade soh 
     // lhedar com stacks 

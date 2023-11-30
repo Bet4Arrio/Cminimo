@@ -63,7 +63,7 @@ opVars:  INT  multVar
     | VARIAVEL INGUAL expr {atribui_var($1);} PONTO_E_VIRGULA
 ;
 
-ifStatement:  IF ABRE_PARENTESES cond FECHA_PARENTESES ABRE_CHAVES {monta_if();} corpo  FECHA_CHAVES  ElseStatment  { monta_start_while(); } 
+ifStatement:  IF ABRE_PARENTESES cond FECHA_PARENTESES ABRE_CHAVES {monta_if();} corpo  FECHA_CHAVES  ElseStatment  { monta_label(); } 
 ;
 
 laco: WHILE  ABRE_PARENTESES { monta_start_while(); } cond   { monta_end_while(); }  FECHA_PARENTESES ABRE_CHAVES corpo FECHA_CHAVES { monta_jmp(); monta_label(); }
