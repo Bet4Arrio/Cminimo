@@ -24,11 +24,14 @@
 "<"			{ coluna+=yyleng; return MENORQUE; }
 "="			{ coluna+=yyleng; return INGUAL; }
 "!"			{ coluna+=yyleng; return NAO; }
+"&&"			{ coluna+=yyleng; return AND; }
+"||"			{ coluna+=yyleng; return OR; }
 "int"		{ coluna+=yyleng; return INT; }
+"while"		{ coluna+=yyleng; return WHILE; }
 "main"		{ coluna+=yyleng; return MAIN; }
 "return"	{ coluna+=yyleng; return RETURN; }
 [0-9]+		{ coluna+=yyleng; yylval.number = atoi(yytext); return NUM; }
-[a-zA-Z][_a-zA-Z0-9]+ 	{ coluna+=yyleng; yylval.string = strdup(yytext); return VARIAVEL; }
+([a-zA-Z])([_a-zA-Z0-9]+) 	{ coluna+=yyleng; yylval.string = strdup(yytext); return VARIAVEL; }
 "//".*\n			{ coluna+=yyleng; }		
 .					{ yyerror("erro lexico"); }
 %%

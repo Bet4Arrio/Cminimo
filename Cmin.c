@@ -12,6 +12,9 @@ exit(0);
 
 FILE *f;
 ht* tabVars;
+stack* labelStack;
+
+unsigned int lastLabel = 0;
 int totaloffset = 0;
 
 typedef struct {
@@ -45,7 +48,7 @@ void printaTabela(){
 
 void inicia_codigo(){
   tabVars = ht_create();
-
+  labelStack = st_create();
   f = fopen("out.s","w+");
 	fprintf(f, ".text\n");
 	fprintf(f, "    .global _start\n\n");
@@ -53,6 +56,15 @@ void inicia_codigo(){
     fprintf(f, "    pushq	%%rbp\n");
     fprintf(f, "    movq %%rsp, %%rbp\n");
 
+}
+
+
+char* cria_label(){
+    char buffer[125];
+    snprintf(buffer, sizeof(buffer),".L%d", lastLabel++);
+    char* result = (char*) malloc(strlen(buffer));;
+    strcpy(result, buffer);
+    return result;
 }
 
 void monta_retorno(){
@@ -121,58 +133,143 @@ void atribui_var(char* Varname){
 }
 
 void monta_maior(){
+    fprintf(f, "# maior que  \n");
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
     fprintf(f, "	cmpq %%rbx, %%rax\n");
     fprintf(f, "	setg	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
 }
 
 void monta_maior_igual(){
+    fprintf(f, "# maior igual\n");
+
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
     fprintf(f, "	cmpq %%rbx, %%rax\n");
     fprintf(f, "	setge	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+
 }
 
 void monta_menor(){
+    fprintf(f, "#menor \n");
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
     fprintf(f, "	cmpq %%rbx, %%rax\n");
     fprintf(f, "	setl	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+
 }
 
 void monta_menor_igual(){
+    fprintf(f, "#menor igual\n");
+
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
     fprintf(f, "	cmpq %%rbx, %%rax\n");
     fprintf(f, "	setle	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+
 }
 
 void monta_igual(){
+    fprintf(f, "#igual\n");
+
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
     fprintf(f, "	cmpq %%rbx, %%rax\n");
     fprintf(f, "	sete	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+
 }
 
 void monta_diferente(){
+    fprintf(f, "#diferente \n");
+
     fprintf(f, "	popq %%rbx\n"); 
     fprintf(f, "	popq %%rax\n");
     fprintf(f, "	cmpq %%rbx, %%rax\n");
     fprintf(f, "	setne	%%al\n");
     fprintf(f, "	movzbq	%%al, %%rax\n");
     fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+
 }
+
+void monta_AND(){
+    fprintf(f, "#&&\n");
+
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	cmpq %%rbx, %%rax\n");
+    fprintf(f, "	sete	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+
+}
+
+void monta_OR(){
+    fprintf(f, "# || \n");
+
+    fprintf(f, "	popq %%rbx\n"); 
+    fprintf(f, "	popq %%rax\n");
+    fprintf(f, "	addq %%rbx, %%rax\n");
+    fprintf(f, "	cmpq $0, %%rax\n");
+    fprintf(f, "	setne	%%al\n");
+    fprintf(f, "	movzbq	%%al, %%rax\n");
+    fprintf(f, "    pushq %%rax\n");
+    fprintf(f, "\n");
+}
+
+
+void monta_start_while(){
+    
+}
+
+void monta_end_while(){
+
+}
+
+
+void monta_label(){
+    char* label = (char *) st_pop(labelStack);
+    fprintf(f, "%s:\n", label);
+}
+
+void monta_jmp(){
+    char* label = (char *) st_pop(labelStack);
+    fprintf(f, "%s:\n", label);
+    free(label);
+}
+
+void monta_if(){
+    char* label = (char *) st_push(labelStack, cria_label());
+
+    fprintf(f, "	popq %%rbx\n");
+    fprintf(f, "	cmpq $1, %%rbx\n"); // ver se eh verdade soh 
+    // lhedar com stacks 
+    fprintf(f, "	jne %s\n", label); //  se for falso 
+}
+
+void monta_else(){
+    char* label =  cria_label();
+    fprintf(f, "	jmp %s\n", label);
+    monta_label();
+    st_push(labelStack, label);
+}
+
 
 void finaliza_cod(){
   fclose(f);

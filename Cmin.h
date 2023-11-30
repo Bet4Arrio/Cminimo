@@ -23,5 +23,12 @@ void monta_menor_igual();
 void monta_igual();
 void monta_diferente();
 
+void monta_OR();
+void monta_AND();
+
+void monta_if();
+void monta_else();
+void monta_label();
+
 void monta_retorno();
 void finaliza_cod();

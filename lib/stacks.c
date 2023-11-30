@@ -39,10 +39,10 @@ void* st_push(stack* st, void* value){
     }
 
     st->index++;
-    void* cpValue = malloc(sizeof(value));
-    memcpy(cpValue, value, sizeof(value));
-    st->entrys[st->index] = cpValue;
-    return cpValue;
+    // void* cpValue = malloc(sizeof(value));
+    // memcpy(cpValue, value, sizeof(value));
+    st->entrys[st->index] = value;
+    return value;
 }
 
 int st_clean(stack* st){
