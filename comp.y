@@ -61,6 +61,8 @@ defVar: VARIAVEL {monta_var($1);}  INGUAL expr {atribui_var($1);}
 ;
 opVars:  INT  multVar 
     | VARIAVEL INGUAL expr {atribui_var($1);} PONTO_E_VIRGULA
+    | VARIAVEL {empilha_var($1);} MAIS INGUAL expr {monta_add(); atribui_var($1);} PONTO_E_VIRGULA
+    |   VARIAVEL {empilha_var($1);} MENOS INGUAL expr {monta_sub(); atribui_var($1);} PONTO_E_VIRGULA
 ;
 
 condOrExpr: cond
