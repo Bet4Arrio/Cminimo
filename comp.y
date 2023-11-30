@@ -23,7 +23,7 @@ extern int yyleng;
 %token <number> NUM
 %token <string> VARIAVEL 
 
-%right  MULTIPLICA DIVIDIR  MENOS MAIS 
+%right  MULTIPLICA DIVIDIR MENOS MAIS 
 %left AND OR
 
 %%
@@ -34,12 +34,13 @@ corpo:  corpoLinha corpo
     | 
  ;  
 
-corpoLinha: defVar
+corpoLinha: opVars
     | ifStatement
     | final
+    | laco
 ;
 final: RETURN  expr  PONTO_E_VIRGULA {monta_retorno(); }
-    | RETURN cond  PONTO_E_VIRGULA {printf("KRL4 "); monta_retorno(); }
+    | RETURN cond  PONTO_E_VIRGULA { monta_retorno(); }
  ;
 expr: ABRE_PARENTESES expr FECHA_PARENTESES
     | expr MULTIPLICA expr {monta_mult();}
@@ -50,17 +51,23 @@ expr: ABRE_PARENTESES expr FECHA_PARENTESES
     | VARIAVEL {empilha_var($1);}
  ;
 
-multVar:  VARIAVEL {monta_var($1);} PONTO_E_VIRGULA
-    | VARIAVEL {monta_var($1);} VIRGULA multVar
+
+multVar:  defVar PONTO_E_VIRGULA
+    | defVar VIRGULA multVar
 ;
-defVar:  INT  multVar 
+
+defVar: VARIAVEL {monta_var($1);}  INGUAL expr {atribui_var($1);}
+    |   VARIAVEL  {monta_var($1);} 
+;
+opVars:  INT  multVar 
     | VARIAVEL INGUAL expr {atribui_var($1);} PONTO_E_VIRGULA
 ;
 
-ifStatement:  IF ABRE_PARENTESES cond FECHA_PARENTESES ABRE_CHAVES {monta_if();} corpo  FECHA_CHAVES  ElseStatment  { monta_label(); } 
+ifStatement:  IF ABRE_PARENTESES cond FECHA_PARENTESES ABRE_CHAVES {monta_if();} corpo  FECHA_CHAVES  ElseStatment  { monta_start_while(); } 
 ;
 
-
+laco: WHILE  ABRE_PARENTESES { monta_start_while(); } cond   { monta_end_while(); }  FECHA_PARENTESES ABRE_CHAVES corpo FECHA_CHAVES { monta_jmp(); monta_label(); }
+;
 
 ElseStatment: ELSE ABRE_CHAVES {monta_else();} corpo FECHA_CHAVES 
     |  

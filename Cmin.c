@@ -115,6 +115,9 @@ void monta_div(){
 
 void monta_var(char* Varname){
     fprintf(f, "#definindo Var %s \n", Varname);
+    if(ht_get(tabVars, Varname) != NULL){
+        yyerror("Variavel ja declarada");
+    }
     VarStruct *  va = (VarStruct*) malloc(sizeof(VarStruct));
     va->nome = (char*) malloc(sizeof(Varname));
     totaloffset += INT_TAM;
@@ -235,22 +238,27 @@ void monta_OR(){
 
 
 void monta_start_while(){
+    char* label = (char *) st_push(labelStack, cria_label());
+    fprintf(f, "%s:\n", label);
     
 }
 
 void monta_end_while(){
-
+    char* label = (char *) st_pop(labelStack);
+    monta_if();
+    st_push(labelStack, label);
 }
 
 
 void monta_label(){
     char* label = (char *) st_pop(labelStack);
     fprintf(f, "%s:\n", label);
+    free(label);
 }
 
 void monta_jmp(){
     char* label = (char *) st_pop(labelStack);
-    fprintf(f, "%s:\n", label);
+    fprintf(f, "jmp %s\n", label);
     free(label);
 }
 
@@ -272,7 +280,7 @@ void monta_else(){
 
 
 void finaliza_cod(){
-  fclose(f);
+    fclose(f);
 	system("as out.s -o out.o");
 	system("ld out.o -o out");
 	system("rm out.o ");

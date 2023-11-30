@@ -29,6 +29,9 @@ void monta_AND();
 void monta_if();
 void monta_else();
 void monta_label();
+void  monta_start_while();
+void  monta_end_while();
+void monta_jmp();
 
 void monta_retorno();
 void finaliza_cod();
