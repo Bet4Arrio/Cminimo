@@ -4,6 +4,8 @@
 	int linha=1;
 	int coluna=1;
 %}
+DIGITO [0-9]
+LETRA [A-Za-z_]
 
 %%
 [ \t]			{ coluna+=yyleng; }
@@ -30,8 +32,8 @@
 "while"		{ coluna+=yyleng; return WHILE; }
 "main"		{ coluna+=yyleng; return MAIN; }
 "return"	{ coluna+=yyleng; return RETURN; }
-[0-9]+		{ coluna+=yyleng; yylval.number = atoi(yytext); return NUM; }
-([a-zA-Z])([_a-zA-Z0-9]+) 	{ coluna+=yyleng; yylval.string = strdup(yytext); return VARIAVEL; }
+{DIGITO}+		{ coluna+=yyleng; yylval.number = atoi(yytext); return NUM; }
+{LETRA}({LETRA}|{DIGITO})*	{ coluna+=yyleng; yylval.string = strdup(yytext); return VARIAVEL; }
 "//".*\n			{ coluna+=yyleng; }		
 .					{ yyerror("erro lexico"); }
 %%
